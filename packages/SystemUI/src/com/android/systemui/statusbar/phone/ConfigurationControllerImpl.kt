@@ -62,7 +62,7 @@ class ConfigurationControllerImpl @Inject constructor(
         val listeners = ArrayList(listeners)
 
         listeners.filterForEach({ this.listeners.contains(it) }) {
-            it.onThemeChanged()
+            it?.onThemeChanged()
         }
     }
 
@@ -71,7 +71,7 @@ class ConfigurationControllerImpl @Inject constructor(
         val listeners = ArrayList(listeners)
 
         listeners.filterForEach({ this.listeners.contains(it) }) {
-            it.onConfigChanged(newConfig)
+            it?.onConfigChanged(newConfig)
         }
         val fontScale = newConfig.fontScale
         val density = newConfig.densityDpi
@@ -80,7 +80,7 @@ class ConfigurationControllerImpl @Inject constructor(
         if (density != this.density || fontScale != this.fontScale ||
                 inCarMode && uiModeChanged) {
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onDensityOrFontScaleChanged()
+                it?.onDensityOrFontScaleChanged()
             }
             this.density = density
             this.fontScale = fontScale
@@ -90,7 +90,7 @@ class ConfigurationControllerImpl @Inject constructor(
         if (smallestScreenWidth != this.smallestScreenWidth) {
             this.smallestScreenWidth = smallestScreenWidth
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onSmallestScreenWidthChanged()
+                it?.onSmallestScreenWidthChanged()
             }
         }
 
@@ -102,7 +102,7 @@ class ConfigurationControllerImpl @Inject constructor(
             // above would always fail. See b/245799099 for more information.
             this.maxBounds.set(maxBounds)
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onMaxBoundsChanged()
+                it?.onMaxBoundsChanged()
             }
         }
 
@@ -110,7 +110,7 @@ class ConfigurationControllerImpl @Inject constructor(
         if (localeList != this.localeList) {
             this.localeList = localeList
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onLocaleListChanged()
+                it?.onLocaleListChanged()
             }
         }
 
@@ -121,20 +121,20 @@ class ConfigurationControllerImpl @Inject constructor(
 
             this.uiMode = uiMode
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onUiModeChanged()
+                it?.onUiModeChanged()
             }
         }
 
         if (layoutDirection != newConfig.layoutDirection) {
             layoutDirection = newConfig.layoutDirection
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onLayoutDirectionChanged(layoutDirection == LAYOUT_DIRECTION_RTL)
+                it?.onLayoutDirectionChanged(layoutDirection == LAYOUT_DIRECTION_RTL)
             }
         }
 
         if (lastConfig.updateFrom(newConfig) and ActivityInfo.CONFIG_ASSETS_PATHS != 0) {
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onThemeChanged()
+                it?.onThemeChanged()
             }
         }
 
@@ -142,7 +142,7 @@ class ConfigurationControllerImpl @Inject constructor(
         if (orientation != newOrientation) {
             orientation = newOrientation
             listeners.filterForEach({ this.listeners.contains(it) }) {
-                it.onOrientationChanged(orientation)
+                it?.onOrientationChanged(orientation)
             }
         }
     }
