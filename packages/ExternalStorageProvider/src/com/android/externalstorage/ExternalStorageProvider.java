@@ -312,6 +312,7 @@ public class ExternalStorageProvider extends FileSystemProvider {
             final String canonicalPath = getPathFromDocId(documentId);
             return isRestrictedPath(root.rootId, canonicalPath);
         } catch (Exception e) {
+            Log.w(TAG, "shouldHideDocument: ", e);
             return true;
         }
     }
@@ -344,10 +345,14 @@ public class ExternalStorageProvider extends FileSystemProvider {
         List<java.nio.file.Path> validRestrictedPathsToCheck = restrictedPathList.stream().filter(
                 Files::exists).collect(Collectors.toList());
 
+        Log.v(TAG, "rootId: " + rootId);
+        Log.v(TAG, "rootPath: " + rootPath);
+        Log.v(TAG, "canonicalPath: " + canonicalPath);
         boolean isRestricted = false;
         java.nio.file.Path filePathToCheck = Paths.get(rootPath, canonicalPath);
         try {
             while (filePathToCheck != null) {
+                Log.v(TAG, "filePathToCheck: " + filePathToCheck.toString());
                 for (java.nio.file.Path restrictedPath : validRestrictedPathsToCheck) {
                     if (Files.isSameFile(restrictedPath, filePathToCheck)) {
                         isRestricted = true;
@@ -363,6 +368,7 @@ public class ExternalStorageProvider extends FileSystemProvider {
             }
         } catch (Exception e) {
             Log.w(TAG, "Error in checking file equality check.", e);
+            updateVolumes();
             isRestricted = true;
         }
 
@@ -518,8 +524,10 @@ public class ExternalStorageProvider extends FileSystemProvider {
 
     @VisibleForTesting
     static String getPathFromDocId(String docId) {
+        Log.v(TAG, "docId: " + docId);
         final int splitIndex = docId.indexOf(':', 1);
         final String docIdPath = docId.substring(splitIndex + 1);
+        Log.v(TAG, "docIdPath: " + docIdPath);
 
         // Canonicalize path and strip the leading "/"
         final String path;
@@ -532,8 +540,10 @@ public class ExternalStorageProvider extends FileSystemProvider {
 
         // Remove the trailing "/" as well.
         if (!path.isEmpty() && path.charAt(path.length() - 1) == '/') {
+            Log.v(TAG, "path: first: " + path);
             return path.substring(0, path.length() - 1);
         } else {
+            Log.v(TAG, "path: second: " + path);
             return path;
         }
     }
