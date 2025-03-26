@@ -368,7 +368,18 @@ public class ExternalStorageProvider extends FileSystemProvider {
             }
         } catch (Exception e) {
             Log.w(TAG, "Error in checking file equality check.", e);
-            isRestricted = true;
+            for (java.nio.file.Path restrictedPath : validRestrictedPathsToCheck) {
+                Log.v(TAG, "filePathToCheck: " + filePathToCheck.toString());
+                // Remove . (current folder) or .. (parent folder)
+                String filePath = filePathToCheck.normalize().toString();
+                // Don't allow unicode characters
+                if (!filePath.matches("^[a-zA-Z0-9/_\-(){}\[\]#&@+! ]+$") && 
+                        filePath.toLowerCase().contains(restrictedPath.toString().toLowerCase())) {
+                    isRestricted = true;
+                    Log.v(TAG, "Restricting access for path: " + filePathToCheck);
+                    break;
+                }
+            }
         }
 
         return isRestricted;
