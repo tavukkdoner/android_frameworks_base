@@ -373,7 +373,7 @@ public class ExternalStorageProvider extends FileSystemProvider {
                 // Remove . (current folder) or .. (parent folder)
                 String filePath = filePathToCheck.normalize().toString();
                 // Don't allow unicode characters
-                if (!filePath.matches("^[a-zA-Z0-9/_\-(){}\[\]#&@+! ]+$") && 
+                if (!filePath.matches("^[a-zA-Z0-9/_\\-(){}\\[\\]#&@+! ]+$") && 
                         filePath.toLowerCase().contains(restrictedPath.toString().toLowerCase())) {
                     isRestricted = true;
                     Log.v(TAG, "Restricting access for path: " + filePathToCheck);
