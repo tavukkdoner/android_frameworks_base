@@ -238,8 +238,8 @@ void android_os_Process_setThreadAffinity(JNIEnv* env, jobject clazz, int tid, j
     cpu_set_t target_cpu_set;
     CPU_ZERO(&target_cpu_set);
 
-    std::vector<int32_t> small_cores = {0, 1, 2, 3};
-    std::vector<int32_t> big_cores = {4, 5, 6, 7};
+    std::vector<int32_t> small_cores = {4, 5, 6, 7};
+    std::vector<int32_t> big_cores = {0, 1, 2, 3};
 
     if (grp == 1) {
         for (int core : small_cores) {
