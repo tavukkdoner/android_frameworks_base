@@ -36,8 +36,10 @@ public class ADBRootService {
         @Override
         public void binderDied() {
             if (mService != null) {
+                Slog.e(TAG, "not null");
                 mService.asBinder().unlinkToDeath(this, 0);
             }
+            Slog.e(TAG, "null");
             mService = null;
         }
     };
@@ -45,6 +47,7 @@ public class ADBRootService {
     private synchronized IADBRootService getService()
             throws RemoteException {
         if (mService != null) {
+            Slog.e(TAG, "getService not null");
             return mService;
         }
 
@@ -52,6 +55,7 @@ public class ADBRootService {
         if (service != null) {
             service.linkToDeath(mDeathRecipient, 0);
             mService = IADBRootService.Stub.asInterface(service);
+            Slog.e(TAG, "getService not null 2");
             return mService;
         }
 
@@ -66,9 +70,16 @@ public class ADBRootService {
         try {
             final IADBRootService svc = getService();
             if (svc != null) {
-                return svc.isSupported();
+                if(svc.isSupported()){
+                   Slog.e(TAG, "svc.isSupported");
+                } else {
+                   Slog.e(TAG, "svc.isSupported not");
+                }
+                return true;//svc.isSupported();
             }
         } catch (RemoteException e) {
+            Slog.e(TAG, "svc isSupported");
+            Slog.e(TAG, e.getMessage());
             throw e.rethrowFromSystemServer();
         }
         return false;
@@ -81,9 +92,13 @@ public class ADBRootService {
         try {
             final IADBRootService svc = getService();
             if (svc != null) {
-                svc.setEnabled(enable);
+                Slog.e(TAG, "svc.setEnabled");
+                //svc.setEnabled(enable);
+                svc.setEnabled(true);
             }
         } catch (RemoteException e) {
+            Slog.e(TAG, "svc setEnabled");
+            Slog.e(TAG, e.getMessage());
             throw e.rethrowFromSystemServer();
         }
     }
@@ -95,9 +110,29 @@ public class ADBRootService {
         try {
             final IADBRootService svc = getService();
             if (svc != null) {
+                Slog.e(TAG, "svc.setEnabled");
+                //svc.setEnabled(enable);
+                svc.setEnabled(true);
+            }
+        } catch (RemoteException e) {
+            Slog.e(TAG, "svc setEnabled");
+            Slog.e(TAG, e.getMessage());
+            //throw e.rethrowFromSystemServer();
+        }
+        try {
+            final IADBRootService svc = getService();
+            if (svc != null) {
+                Slog.e(TAG, "svc.getEnabled");
+                if(svc.getEnabled()){
+                   Slog.e(TAG, "svc.getEnabled");
+                } else {
+                   Slog.e(TAG, "svc.getEnabled not");
+                }
                 return svc.getEnabled();
             }
         } catch (RemoteException e) {
+            Slog.e(TAG, "svc getEnabled");
+            Slog.e(TAG, e.getMessage());
             throw e.rethrowFromSystemServer();
         }
         return false;
