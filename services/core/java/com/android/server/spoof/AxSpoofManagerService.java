@@ -46,7 +46,7 @@ public final class AxSpoofManagerService extends SystemService {
     private final AxSpoofManagerInternal mLocalService = new LocalService();
 
     private ContentObserver mObserver;
-    private volatile boolean mReady;
+    private boolean mReady;
 
     public AxSpoofManagerService(Context context) {
         super(context);
@@ -69,10 +69,14 @@ public final class AxSpoofManagerService extends SystemService {
         if (mReady) {
             return;
         }
-        refreshAll();
-        registerObserver();
+
         mReady = true;
-        Slog.i(TAG, "AxSpoofManager ready");
+        
+        BackgroundThread.getHandler().post(() -> {
+            registerObserver();
+            refreshAll();
+            Slog.i(TAG, "AxSpoofManager ready");
+        });
     }
 
     private void registerObserver() {
@@ -83,6 +87,7 @@ public final class AxSpoofManagerService extends SystemService {
             @Override
             public void onChange(boolean selfChange, Uri uri) {
                 if (uri == null) {
+                    refreshAll();
                     return;
                 }
                 String key = uri.getLastPathSegment();
@@ -106,16 +111,21 @@ public final class AxSpoofManagerService extends SystemService {
     }
 
     private void refreshKey(String key) {
-        String value = readSetting(key);
-        if (value == null) {
-            mCache.remove(key);
-        } else {
-            mCache.put(key, value);
+        try {
+            String value = readSetting(key);
+
+            if (value == null) {
+                mCache.remove(key);
+            } else {
+                mCache.put(key, value);
+            }
+        } catch (Exception e) {
+            Slog.w(TAG, "Failed to refresh setting: " + key, e);
         }
     }
 
     private String getCached(String key) {
-        return mReady ? mCache.get(key) : readSetting(key);
+        return mCache.get(key);
     }
 
     private String readSetting(String key) {
