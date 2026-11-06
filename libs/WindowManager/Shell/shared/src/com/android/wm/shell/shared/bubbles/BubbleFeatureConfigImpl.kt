@@ -27,10 +27,6 @@ class BubbleFeatureConfigImpl(
 ) : BubbleFeatureConfig {
 
     override fun areAppBubblesSupported(): Boolean {
-        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-
-        // Fail fast if this is a low-ram device.
-        if (am.isLowRamDevice) return false
 
         // Fail fast if Bubble Anything is disabled.
         if (!BubbleFlagHelper.enableCreateAnyBubble()) return false
